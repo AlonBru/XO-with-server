@@ -1,7 +1,9 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import {Modal} from "@material-ui/core";
+import axios from 'axios'
+import WinnerList from './WinnerList'
 
 function Square(props){
   return (
@@ -43,6 +45,8 @@ function Board (props) {
       const [history,setHistory] = useState([{squares: Array(9).fill(null)}]);
       const [xIsNext,setXIsNext] = useState(true);
       const [stepNumber,setStepNumber] = useState(0);
+      const [theWinnerName,setTheWinnerName] = useState('')
+      const [theWinners , setTheWinners]=useState([])
     
     function handleClick(i) {
       const newHistory = history.slice(0, stepNumber + 1);
@@ -89,13 +93,22 @@ function Board (props) {
       } else { 
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
       }
-      function handleClose(){
+      async function handleClose(){
         setGameWon(false);
         setHistory([{squares: Array(9).fill(null)}]);
         setXIsNext(true);
         setStepNumber(0);
+        setTheWinners([])
+        const winerObj= {winnerName: theWinnerName, date: new Date().toLocaleString()}
+        const response = await axios.post('/api/records', winerObj);
+        console.log(response);
       }
-      
+      async function showWinners(){
+        const response = await axios.get('/api/records');
+        console.log(response);
+        setTheWinners(response.data)
+      }
+  
       return (
         <div className="game">
             <div className="game-board">
@@ -107,11 +120,13 @@ function Board (props) {
             <div className="game-info">
               <div>{status}</div>
               <ol>{moves}</ol>
+              <button onClick={showWinners}>Show all the winners</button>
             </div>
+            <WinnerList theWinners={theWinners}/>
             <Modal open = {gameWon} onClose={handleClose}>
               <div>
                 <div> well done you won!</div>
-                <input placeholder="Enter your name"/>
+                <input onChange={e => setTheWinnerName(e.target.value)}  placeholder="Enter your name"/>
               </div>
             </Modal>
         </div>
