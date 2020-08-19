@@ -1,7 +1,9 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Modal } from '@material-ui/core';
+import Axios from 'axios';
+import HallOfFame from './HallOfFame';
 
 function Square(props){
   return (
@@ -39,12 +41,24 @@ function Board (props) {
   }
   
   function Game(){
-      const [history,setHistory] = useState([{squares: Array(9).fill(null)}])
-      const [xIsNext,setXIsNext] = useState(true)
-      const [stepNumber,setStepNumber] = useState(0)
-      const [gameIsWon,setGameIsWon] = useState(false)
-      const [resultLogged,setResultLogged] = useState(false)
+
+    const [history,setHistory] = useState([{squares: Array(9).fill(null)}])
+    const [xIsNext,setXIsNext] = useState(true)
+    const [stepNumber,setStepNumber] = useState(0)
+    const [gameIsWon,setGameIsWon] = useState(false)
+    const [resultLogged,setResultLogged] = useState(false)
+    const [winnerName,setWinnerName] = useState("")
+    const [gameLength,setGameLength] = useState(0)
     
+    useEffect(timer,[gameLength])
+
+    function timer(){
+            if(gameIsWon)return;
+            setTimeout(() => {
+                console.log( gameLength)
+              setGameLength(gameLength + 1)  
+            }, 1000);
+    } 
     function handleClick(i) {
       const newHistory = history.slice(0, stepNumber + 1);
       const current = newHistory[newHistory.length - 1];
@@ -68,6 +82,7 @@ function Board (props) {
         setResultLogged(false);
         setStepNumber( step);
         setXIsNext ((step % 2) === 0);
+        if(step===0){setGameLength(0)}
     }
       const current = history[stepNumber];
       const winner = calculateWinner(current.squares);
@@ -83,9 +98,10 @@ function Board (props) {
       });
 
       let status;
+      
       if(winner){
           status = `Winner: ${winner}`;
-          if (!gameIsWon&&resultLogged==false) {setGameIsWon(true)}
+          if (!gameIsWon&&resultLogged===false) {setGameIsWon(true)}
       } else { 
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
       }
@@ -102,13 +118,30 @@ function Board (props) {
             <div>{status}</div>
             <ol>{moves}</ol>
           </div>
-          <Modal open={gameIsWon} onClose={(e)=>{
+          <HallOfFame/>
+          <Modal open={gameIsWon&& !resultLogged} onClose={(e)=>{
               setGameIsWon(false);
               setResultLogged(true);
             }}>
             <div>
-               you win!
-               <input placeholder='what is your name?'/>
+                <h1>you win!</h1>
+                <input 
+                    placeholder='what is your name?' 
+                    onChange={(e)=>{
+                        let query= e.target.value;
+                        setWinnerName(query);
+                }} />
+                <button onClick={()=>{
+                    const date = new Date();
+                    let winnerObject ={
+                        winnerName: winnerName,
+                        date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+                        time: gameLength+' seconds'
+                        }
+                    setResultLogged(true);
+                    console.log(winnerObject)
+                    Axios.post('/api/v1/records', winnerObject);
+                }}> send </button>                
             </div>
           </Modal>
         </div>
