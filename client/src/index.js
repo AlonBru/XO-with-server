@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { Modal } from '@material-ui/core';
 
 function Square(props){
   return (
@@ -41,6 +42,8 @@ function Board (props) {
       const [history,setHistory] = useState([{squares: Array(9).fill(null)}])
       const [xIsNext,setXIsNext] = useState(true)
       const [stepNumber,setStepNumber] = useState(0)
+      const [gameIsWon,setGameIsWon] = useState(false)
+      const [resultLogged,setResultLogged] = useState(false)
     
     function handleClick(i) {
       const newHistory = history.slice(0, stepNumber + 1);
@@ -61,11 +64,11 @@ function Board (props) {
     }
 
     function jumpTo(step) {
+        setGameIsWon(false);
+        setResultLogged(false);
         setStepNumber( step);
         setXIsNext ((step % 2) === 0);
     }
-
-    //   const history= this.state.history;
       const current = history[stepNumber];
       const winner = calculateWinner(current.squares);
       const moves = history.map((step, move) => {
@@ -81,7 +84,8 @@ function Board (props) {
 
       let status;
       if(winner){
-        status = `Winner: ${winner}`;
+          status = `Winner: ${winner}`;
+          if (!gameIsWon&&resultLogged==false) {setGameIsWon(true)}
       } else { 
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
       }
@@ -98,6 +102,15 @@ function Board (props) {
             <div>{status}</div>
             <ol>{moves}</ol>
           </div>
+          <Modal open={gameIsWon} onClose={(e)=>{
+              setGameIsWon(false);
+              setResultLogged(true);
+            }}>
+            <div>
+               you win!
+               <input placeholder='what is your name?'/>
+            </div>
+          </Modal>
         </div>
       );
     
