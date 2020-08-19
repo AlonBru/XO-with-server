@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import {Modal} from "@material-ui/core";
 
 function Square(props){
   return (
@@ -38,9 +39,10 @@ function Board (props) {
   }
   
   function Game(){
-      const [history,setHistory] = useState([{squares: Array(9).fill(null)}])
-      const [xIsNext,setXIsNext] = useState(true)
-      const [stepNumber,setStepNumber] = useState(0)
+      const [gameWon , setGameWon] = useState(false);
+      const [history,setHistory] = useState([{squares: Array(9).fill(null)}]);
+      const [xIsNext,setXIsNext] = useState(true);
+      const [stepNumber,setStepNumber] = useState(0);
     
     function handleClick(i) {
       const newHistory = history.slice(0, stepNumber + 1);
@@ -65,45 +67,59 @@ function Board (props) {
         setXIsNext ((step % 2) === 0);
     }
 
-    //   const history= this.state.history;
       const current = history[stepNumber];
       const winner = calculateWinner(current.squares);
       const moves = history.map((step, move) => {
-        const desc = move ?
-        `Go to move #${move}`:
-        `Go to game start`;
-        return (
+        const desc = move? 
+        "Go to move #" + move : 
+        'Go to game start';
+      return (
           <li key={move}>
             <button onClick={() => jumpTo(move)}>{desc}</button>
           </li>
         );
       });
-
+    
       let status;
       if(winner){
         status = `Winner: ${winner}`;
+        if(!gameWon){
+          setGameWon(true);
+        }
       } else { 
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+      }
+      function handleClose(){
+        setGameWon(false);
+        setHistory([{squares: Array(9).fill(null)}]);
+        setXIsNext(true);
+        setStepNumber(0);
       }
       
       return (
         <div className="game">
-          <div className="game-board">
-            <Board
-              squares={current.squares}
-              onClick={i => handleClick(i)}
-            />
-          </div>
-          <div className="game-info">
-            <div>{status}</div>
-            <ol>{moves}</ol>
-          </div>
+            <div className="game-board">
+              <Board
+                squares={current.squares}
+                onClick={i => handleClick(i)}
+              />
+            </div>
+            <div className="game-info">
+              <div>{status}</div>
+              <ol>{moves}</ol>
+            </div>
+            <Modal open = {gameWon} onClose={handleClose}>
+              <div>
+                <div> well done you won!</div>
+                <input placeholder="Enter your name"/>
+              </div>
+            </Modal>
         </div>
+
       );
     
   }
   
-  // ========================================
   
   ReactDOM.render(<Game />, document.getElementById('root'));
 
