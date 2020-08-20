@@ -3,7 +3,8 @@ const fs = require('fs').promises;
 const path = require('path')
 
 const app = express();
-app.use(express.static(path.join(__dirname, '../client/build')))
+// app.use(express.static(path.join(__dirname, '../client/build')))
+app.use(express.static('../client/build'))
 
 app.use(express.json());
 
@@ -11,9 +12,9 @@ app.get('/ping', (req, res) => {
     return res.send('pong')
   })
 
-  app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
-  })
+//   app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../client/build', 'index.html'))
+//   })
 
 app.get('/api/v1/records',async (req,res)=>{
     const records = await fs.readFile("./records.json",'utf-8');

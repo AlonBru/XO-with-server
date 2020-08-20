@@ -4,6 +4,7 @@ import './index.css';
 import { Modal } from '@material-ui/core';
 import Axios from 'axios';
 import HallOfFame from './HallOfFame';
+import chicken from './chicken.png'
 
 function Square(props){
   return (
@@ -48,17 +49,9 @@ function Board (props) {
     const [gameIsWon,setGameIsWon] = useState(false)
     const [resultLogged,setResultLogged] = useState(false)
     const [winnerName,setWinnerName] = useState("")
-    const [gameLength,setGameLength] = useState(0)
-    
-    useEffect(timer,[gameLength])
+    const [gameStart,setGameStart] = useState((new Date().getTime())/1000)
+    const [winTime,setWinTime] = useState(0)
 
-    function timer(){
-            if(gameIsWon)return;
-            setTimeout(() => {
-                console.log( gameLength)
-              setGameLength(gameLength + 1)  
-            }, 1000);
-    } 
     function handleClick(i) {
       const newHistory = history.slice(0, stepNumber + 1);
       const current = newHistory[newHistory.length - 1];
@@ -82,7 +75,7 @@ function Board (props) {
         setResultLogged(false);
         setStepNumber( step);
         setXIsNext ((step % 2) === 0);
-        if(step===0){setGameLength(0)}
+        if(step===0){setGameStart((new Date().getTime())/1000)}
     }
       const current = history[stepNumber];
       const winner = calculateWinner(current.squares);
@@ -101,6 +94,7 @@ function Board (props) {
       
       if(winner){
           status = `Winner: ${winner}`;
+          if (!winTime){setWinTime((new Date().getTime())/1000)}
           if (!gameIsWon&&resultLogged===false) {setGameIsWon(true)}
       } else { 
         status = 'Next player: ' + (xIsNext ? 'X' : 'O');
@@ -108,40 +102,48 @@ function Board (props) {
       
       return (
         <div className="game">
-          <div className="game-board">
-            <Board
-              squares={current.squares}
-              onClick={i => handleClick(i)}
-            />
-          </div>
-          <div className="game-info">
-            <div>{status}</div>
-            <ol>{moves}</ol>
-          </div>
+            <div className="play-area" >
+                <div className="game-board">
+                <Board
+                    squares={current.squares}
+                    onClick={i => handleClick(i)}
+                />
+            </div>
+                <div className='status' >
+                    {status}
+                    <ol>{moves}</ol>
+                </div>
+             </div>
+        
           <HallOfFame/>
-          <Modal open={gameIsWon&& !resultLogged} onClose={(e)=>{
+          <p>{gameStart}</p>
+          <Modal  open={gameIsWon&& !resultLogged} onClose={(e)=>{
+        //   <Modal  open={/*gameIsWon&& !resultLogged*/ true} onClose={(e)=>{
+              if(resultLogged)
               setGameIsWon(false);
-              setResultLogged(true);
             }}>
-            <div>
-                <h1>you win!</h1>
-                <input 
-                    placeholder='what is your name?' 
-                    onChange={(e)=>{
-                        let query= e.target.value;
-                        setWinnerName(query);
-                }} />
-                <button onClick={()=>{
-                    const date = new Date();
-                    let winnerObject ={
-                        winnerName: winnerName,
-                        date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
-                        time: gameLength+' seconds'
-                        }
-                    setResultLogged(true);
-                    console.log(winnerObject)
-                    Axios.post('/api/v1/records', winnerObject);
-                }}> send </button>                
+            <div className="winModal">
+                <img className='chicken' src={chicken} alt='WINNER WINNER' />
+                <label className='winnerInput' htmlFor='input'>
+                Champion, enter thy name!
+                    <input 
+                        placeholder= ''
+                        onChange={(e)=>{
+                            let query= e.target.value;
+                            setWinnerName(query);
+                    }} />
+                    <button onClick={()=>{
+                        const date = new Date();
+                        let winnerObject ={
+                            winnerName: winnerName,
+                            date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+                            gameDuration: Math.round(winTime-gameStart)+' seconds'
+                            }
+                        setResultLogged(true);
+                        console.log(winnerObject)
+                        Axios.post('/api/v1/records', winnerObject);
+                    }}> ⸙ Perpetuate your Triumph ⸙ </button>                
+                </label>
             </div>
           </Modal>
         </div>

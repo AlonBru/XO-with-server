@@ -17,27 +17,37 @@ const HallOfFame= () => {
     }
     return(<>
         <button 
+        className='buttonHOF'
         onClick={getHOF} 
         onClose={()=>{
             setDisplayHOF(false)
         }}>
             Display Hall Of Fame
         </button>
-        <Modal open={displayHOF} onClose={()=>{setDisplayHOF(false)}}>
-       {/* <></> */}
-        <table>
-            <tr>
-                <th>Winner's Name</th>
-                <th>Date of win</th>
-            </tr>
-            {HOF.map(record=>{
+        <Modal  open={displayHOF} onClose={()=>{setDisplayHOF(false)}}>
+        <>
+        <h1>HAll of Fame</h1>
+        <table className='recordsModal'>
+            <thead>
+                <tr>
+                    <th>Winner's Name</th>
+                    <th>Date of win</th>
+                    <th>time to win</th>
+                </tr>
+            </thead>
+            <tbody>
+              {HOF.map(record=>{
                 return(
-                    <tr>        
+                    <tr key={record.id}>        
                         <td>{record.winnerName}</td>
                         <td>{record.date}</td>
+                        <td>{record.gameDuration}</td>
                     </tr>)})
-            }
+            }  
+            </tbody>
+            
         </table>
+        </>
         </Modal>
     </>
     )

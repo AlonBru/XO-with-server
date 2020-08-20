@@ -15,6 +15,7 @@ body {
   
   .status {
     margin-bottom: 10px;
+    margin-left: 10px;
   }
   
   .square {
@@ -42,10 +43,53 @@ body {
   
   .game {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+  }
+  .play-area{
+    display: flex;
+    flex-direction: row; 
   }
   
   .game-info {
     margin-left: 20px;
   }
-  
+
+  .winModal{
+      position: absolute;
+      left: 50xp;
+      background:goldenrod;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 20%/50%;
+      padding: 20px 60px ;
+      width:fit-content;
+  }
+  .winnerInput{
+      height: 100px;
+      color:white;
+      font-weight: 700;
+      font-size: 1.5em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content:space-around ;
+      
+     
+  }
+  .winnerInput>input{
+       width: 200px;
+       background:rgb(160, 160, 20);
+       color: gold;
+  }
+  .winnerInput>button{
+       width: 200px;
+       background:purple;
+       border-color: purple;
+       color: gold;
+       border-radius: 5% / 50%;
+       font-weight: 700;
+  }
+  .chicken{
+    width:fit-content;
+  }
