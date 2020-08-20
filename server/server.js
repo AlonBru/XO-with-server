@@ -10,23 +10,6 @@ app.get('/', function(req, res) {
 });
 
 
-// app.use("/",express.static('../client/build/index'));
-// app.get('/', function(req, res) {
-//   res.sendFile('../client/build/index.html');
-// });
-
-
-
-
-// app.get('/', function(req, res) {
-//     res.sendFile('../client/build/index.html');
-//   });
-
-//  app.get('/',async (req,res)=>{
-//     const content = await fs.readFile('../client/build/index.html');
-//     res.send(content);
-// })
-
 app.get('/api/records',async (req,res)=>{
     const content = await fs.readFile('./records.json');
     const json = JSON.parse(content)
