@@ -9,7 +9,7 @@ function WinnerList({theWinners}){
         <div>
             {
                 theWinners.map((v,i)=>
-                <div key={i}>name:{v.winnerName} date:{v.date}</div>
+            <div key={i}><b>Name:</b>{v.winnerName} <b>Date:</b>{v.date} <b>Time of the game:</b>{v.gameTime} sec</div>
                 )
             }
         </div>
