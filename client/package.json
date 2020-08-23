@@ -12,11 +12,11 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.2"
   },
-  "proxy":"http://localhost:8080",
+  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -33,5 +33,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "puppeteer": "^5.2.1"
   }
 }

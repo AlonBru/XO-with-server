@@ -8,7 +8,7 @@ import WinnerList from './WinnerList'
 
 function Square(props){
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className="square" id={'square_'+ props.id} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -17,22 +17,23 @@ function Square(props){
 function Board (props) {
     const renderSquare = (i) => {
       return <Square 
-      value={ props.squares[i]} 
+      id={i}
+      value={props.squares[i]} 
       onClick = {()=> props.onClick(i)}/>;
     }   
     return (
     <div>
-        <div className="board-row">
+        <div className="board-row1">
         { renderSquare(0)}
         { renderSquare(1)}
         { renderSquare(2)}
         </div>
-        <div className="board-row">
+        <div className="board-row2">
         { renderSquare(3)}
         { renderSquare(4)}
         { renderSquare(5)}
         </div>
-        <div className="board-row">
+        <div className="board-row3">
         { renderSquare(6)}
         { renderSquare(7)}
         { renderSquare(8)}
@@ -149,7 +150,7 @@ function Board (props) {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           >
-              <div style={{position:'relative',  backgroundColor:"wheat"}}>
+              <div id="modal" style={{position:'relative',  backgroundColor:"wheat"}}>
                 <h1> CHAMPION, YOU WON!</h1>
                 <div><b>Date: </b> {new Date().toLocaleString()}, <b>Time of the game: </b> {Math.floor((timerEnd-timerStart)/1000)} sec</div>
                 <input onChange={e => setTheWinnerName(e.target.value)}  placeholder="Enter your name"/>
